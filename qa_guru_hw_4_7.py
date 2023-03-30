@@ -1,7 +1,7 @@
 import zipfile
 from zipfile import ZipFile
 from PyPDF2 import PdfReader
-import csv, os, openpyxl
+import csv, os, openpyxl, pytest
 
 pdf_size = os.path.getsize("examples/docs.pdf")
 xlsx_size = os.path.getsize("examples/file.xlsx")
@@ -9,8 +9,10 @@ csv_size = os.path.getsize("examples/username.csv")
 
 
 def delete_zip():
-    path = os.path.abspath("resources")
-    os.remove(path)
+    if os.path.exists(os.path.abspath(os.path.join("resources", "test.zip"))):
+        os.remove(os.path.abspath(os.path.join("resources", "test.zip")))
+
+delete_zip()
 
 
 def pdf_pages_num():
@@ -36,7 +38,7 @@ def csv_max_row():
         return csv_row
 
 
-def zip_file():
+def zip_files():
     with ZipFile("resources/test.zip", "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.write("examples/docs.pdf", "pytest.pdf")
         pdf_zipfile = zf.open("pytest.pdf")
@@ -68,10 +70,10 @@ def zip_file():
         ]
 
 
-def test_rezult():
-    assert pdf_size == zip_file()[0]
-    assert xlsx_size == zip_file()[1]
-    assert csv_size == zip_file()[2]
-    assert pdf_pages_num() == zip_file()[3]
-    assert xlsx_max_row() == zip_file()[4]
-    assert csv_max_row() == zip_file()[5]
+def test_rezults():
+    assert pdf_size == zip_files()[0]
+    assert xlsx_size == zip_files()[1]
+    assert csv_size == zip_files()[2]
+    assert pdf_pages_num() == zip_files()[3]
+    assert xlsx_max_row() == zip_files()[4]
+    assert csv_max_row() == zip_files()[5]
